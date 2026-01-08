@@ -1,10 +1,11 @@
 import { useMetrics } from "@/hooks/use-metrics";
 import { GlassCard, GlassCardContent, GlassCardHeader, GlassCardTitle } from "@/components/ui/glass-card";
-import { Activity, AlertTriangle, BarChart, Users } from "lucide-react";
+import { Activity, AlertTriangle, BarChart, Users, Info } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 export function MetricsGrid() {
-  const { data: metrics, isLoading } = useMetrics();
+  const { data: metrics, isLoading, isError, error } = useMetrics();
 
   if (isLoading) {
     return (
@@ -16,7 +17,32 @@ export function MetricsGrid() {
     );
   }
 
-  if (!metrics) return null;
+  if (isError) {
+    return (
+      <Alert variant="destructive">
+        <Info className="h-4 w-4" />
+        <div className="ml-2">
+          <AlertTitle>Failed to load metrics</AlertTitle>
+          <AlertDescription className="text-xs text-muted-foreground">
+            {(error as Error)?.message ?? "An error occurred while fetching data."}
+          </AlertDescription>
+        </div>
+      </Alert>
+    );
+  }
+
+  if (!metrics) {
+    return (
+      <GlassCard>
+        <GlassCardHeader>
+          <GlassCardTitle>Metrics</GlassCardTitle>
+        </GlassCardHeader>
+        <GlassCardContent>
+          <div className="text-sm text-muted-foreground">No metrics available.</div>
+        </GlassCardContent>
+      </GlassCard>
+    );
+  }
 
   const items = [
     {
@@ -46,7 +72,7 @@ export function MetricsGrid() {
   ];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 animate-in fade-in duration-500">
       {items.map((item) => (
         <GlassCard key={item.title} variant="hoverable" className="relative overflow-hidden group">
           <GlassCardHeader className="flex flex-row items-center justify-between pb-2">

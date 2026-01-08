@@ -22,7 +22,7 @@ export function Sidebar() {
   const [location] = useLocation();
 
   const NavContent = () => (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full" role="navigation" aria-label="Primary">
       <div className="p-6 border-b border-border/50">
         <div className="flex items-center gap-3">
           <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center">
@@ -39,14 +39,23 @@ export function Sidebar() {
             <Link key={item.href} href={item.href}>
               <div
                 className={cn(
-                  "flex items-center gap-3 px-4 py-3 rounded-lg cursor-pointer transition-all duration-200 group",
-                  isActive 
-                    ? "bg-primary/10 text-primary border border-primary/20 shadow-sm" 
-                    : "text-muted-foreground hover:text-foreground hover:bg-white/5"
+                  "relative flex items-center gap-3 px-4 py-3 rounded-lg cursor-pointer group transition-all duration-300 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30",
+                  isActive
+                    ? "bg-primary/10 text-primary border border-primary/20 shadow-sm"
+                    : "text-muted-foreground hover:text-foreground hover:bg-white/5 border border-transparent hover:border-white/10"
                 )}
+                aria-current={isActive ? "page" : undefined}
               >
+                {/* Active indicator */}
+                <span
+                  className={cn(
+                    "absolute left-0 top-0 h-full w-0.5 rounded-r transition-all duration-300",
+                    isActive ? "bg-primary/70" : "bg-transparent group-hover:bg-white/10"
+                  )}
+                  aria-hidden="true"
+                />
                 <item.icon className={cn("h-5 w-5", isActive ? "text-primary" : "group-hover:text-foreground")} />
-                <span className="font-medium">{item.label}</span>
+                <span className={cn("font-medium transition-colors", isActive && "text-foreground")}>{item.label}</span>
               </div>
             </Link>
           );
@@ -70,18 +79,18 @@ export function Sidebar() {
       <div className="lg:hidden fixed top-4 left-4 z-50">
         <Sheet>
           <SheetTrigger asChild>
-            <Button variant="outline" size="icon" className="bg-background border-border">
+            <Button variant="outline" size="icon" className="bg-background border-border transition-colors focus-visible:ring-2 focus-visible:ring-primary/30" aria-label="Open navigation">
               <Menu className="h-5 w-5" />
             </Button>
           </SheetTrigger>
-          <SheetContent side="left" className="p-0 w-72 bg-card border-r border-border">
+          <SheetContent side="left" className="p-0 w-72 bg-card border-r border-border data-[state=open]:duration-300">
             <NavContent />
           </SheetContent>
         </Sheet>
       </div>
 
       {/* Desktop Sidebar */}
-      <aside className="hidden lg:flex w-72 flex-col fixed inset-y-0 left-0 bg-card border-r border-border/50 shadow-2xl z-40">
+      <aside className="hidden lg:flex w-72 flex-col fixed inset-y-0 left-0 bg-card border-r border-border/50 shadow-2xl z-40 transition-[width,transform,opacity] duration-300">
         <NavContent />
       </aside>
     </>

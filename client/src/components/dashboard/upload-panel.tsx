@@ -82,7 +82,7 @@ export function UploadPanel() {
               <span>Processing...</span>
               <span>Please wait</span>
             </div>
-            <Progress value={45} className="h-1" />
+            <Progress value={undefined} className="h-1" />
           </div>
         )}
 
